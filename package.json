@@ -1,0 +1,28 @@
+{
+  "name": "stock_management_sytem_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/linkplify-ui/stock_management_sytem_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/linkplify-ui/stock_management_sytem_api/issues"
+  },
+  "homepage": "https://bitbucket.org/linkplify-ui/stock_management_sytem_api#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "joi": "^18.0.2",
+    "mongoose": "^9.3.0"
+  }
+}
