@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get('/', index)
 router.get('/:id', show)
-router.put('/:id', update, validateRequest(updateProductRequest))
-router.post('/', store, validateRequest(storeProductRequest))
+router.put('/:id', validateRequest(updateProductRequest), update)
+router.post('/', validateRequest(storeProductRequest), store)
 router.delete('/:id', destroy)
 
 module.exports = router

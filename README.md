@@ -1,51 +1,43 @@
 # Stock Management System API
 
-Node.js + Express API for managing product inventory with MongoDB. The service provides CRUD endpoints for products and returns consistent JSON responses with pagination support.
+Node.js + Express API for managing product inventory with MongoDB. The service provides CRUD endpoints for products, search + pagination, and consistent JSON responses.
 
-## Project Overview
+**Project Overview**
+- Purpose: Manage product inventory (create, read, update, delete).
+- Main features: Product CRUD, search by name, pagination, seed data insertion on startup, standardized API responses.
 
+**Technology Stack**
 - Runtime: Node.js
 - Framework: Express 5
-- Database: MongoDB via Mongoose
+- Database: MongoDB
+- ODM: Mongoose
 - Validation: Joi
-- Seed data: Inserts sample products at startup
+- Config: dotenv
+- Middleware: cors
 
-## Installation
-
+**Installation**
+1. Clone the repository:
+```bash
+git clone <repo-url>
+cd stock_management_sytem_api
+```
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-## Environment Configuration
-
+**Environment Configuration**
 Create a `.env` file at the project root:
-
 ```env
 PORT=3000
 CONNECTION_STRING=mongodb://localhost:27017/stock_management
+DB_NAME=stock_management
 ```
+- `PORT` (optional): HTTP port for the API (defaults to `3000`).
+- `CONNECTION_STRING` (optional): MongoDB connection string (defaults to `mongodb://localhost:27017/stock_management`).
+- `DB_NAME` (optional): Present in `.env` but currently unused by the code.
 
-- `PORT` (optional): HTTP port for the API (defaults to 3000)
-- `CONNECTION_STRING` (optional): MongoDB connection string (defaults to local MongoDB)
-
-## How To Run Locally
-
-1. Start MongoDB (local or remote).
-2. Run the API:
-
-```bash
-npm start
-```
-
-Server boot process:
-- Loads environment variables
-- Connects to MongoDB
-- Registers the `Product` model
-- Inserts seed data
-- Mounts API routes under `/api/<route-file-name>`
-
-## Folder Structure
-
+**Project Structure**
 ```
 src/
   controllers/   # Request handlers (business logic)
@@ -56,39 +48,40 @@ src/
   resources/     # API response mappers
   routes/        # Express routers
   services/      # Services (e.g., DB connection)
-  utils/         # Shared helpers
+  utils/         # Shared helpers (empty currently)
 ```
 
-## API Endpoints
-
+**API Documentation**
 Base URL: `http://localhost:3000`
 
-All routes below are mounted at `/api/product` because the route file is `src/routes/api/product.js`.
+All routes below are mounted at `/api/product` because the route file is `src/routes/api/product.js` and the server mounts route files as `/api/<file-name>`.
 
-### Health Check
-
-`GET /`
-
-Response:
+**1) Health Check**
+- Endpoint: `/`
+- Method: `GET`
+- Description: Simple health check
+- Request parameters: None
+- Request body: None
+- Success response:
 ```json
 "API is running..."
 ```
+- Error responses: None
 
-### List Products (search + pagination)
-
-`GET /api/product`
-
-Query params:
-- `name` (optional): case-insensitive name search
-- `page` (optional, default 1)
-- `limit` (optional, default 10)
-
-Example request:
+**2) List Products (search + pagination)**
+- Endpoint: `/api/product`
+- Method: `GET`
+- Description: Returns a list of products with optional name search and pagination
+- Request parameters:
+  - `name` (optional, query): case-insensitive search by product name
+  - `page` (optional, query, default `1`)
+  - `limit` (optional, query, default `10`)
+- Request body: None
+- Example request:
 ```bash
 curl "http://localhost:3000/api/product?name=cola&page=1&limit=5"
 ```
-
-Example response:
+- Success response:
 ```json
 {
   "success": true,
@@ -114,17 +107,21 @@ Example response:
   }
 }
 ```
+- Error responses:
+  - `500` Internal server error
 
-### Get Product By ID
-
-`GET /api/product/:id`
-
-Example:
+**3) Get Product By ID**
+- Endpoint: `/api/product/:id`
+- Method: `GET`
+- Description: Returns a single product by MongoDB ObjectId
+- Request parameters:
+  - `id` (required, path): product ObjectId
+- Request body: None
+- Example request:
 ```bash
 curl "http://localhost:3000/api/product/65f0b7d9d5a89a0f7e5f1234"
 ```
-
-Example response:
+- Success response:
 ```json
 {
   "success": true,
@@ -140,34 +137,28 @@ Example response:
   }
 }
 ```
+- Error responses:
+  - `400` Invalid product ID
+  - `404` Product not found
+  - `500` Internal server error
 
-### Create Product
-
-`POST /api/product`
-
-Required body:
-- `name` (string)
-- `quantity` (number)
-- `price_in` (number)
-- `price_out` (number)
-- `description` (string, optional)
-- `image` (string, optional)
-
-Example:
-```bash
-curl -X POST "http://localhost:3000/api/product" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Fanta",
-    "quantity": 20,
-    "price_in": 40,
-    "price_out": 100,
-    "description": "This is Fanta orange",
-    "image": "https://example.com/fanta.png"
-  }'
+**4) Create Product**
+- Endpoint: `/api/product`
+- Method: `POST`
+- Description: Creates a new product
+- Request parameters: None
+- Request body example:
+```json
+{
+  "name": "Fanta",
+  "quantity": 20,
+  "price_in": 40,
+  "price_out": 100,
+  "description": "This is Fanta orange",
+  "image": "https://example.com/fanta.png"
+}
 ```
-
-Example response:
+- Success response:
 ```json
 {
   "success": true,
@@ -183,26 +174,28 @@ Example response:
   }
 }
 ```
+- Error responses:
+  - `422` Validation failed
+  - `500` Internal server error
 
-### Update Product
-
-`PUT /api/product/:id`
-
-Example:
-```bash
-curl -X PUT "http://localhost:3000/api/product/65f0b7d9d5a89a0f7e5f9999" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Fanta Updated",
-    "quantity": 22,
-    "price_in": 42,
-    "price_out": 105,
-    "description": "Updated description",
-    "image": "https://example.com/fanta-updated.png"
-  }'
+**5) Update Product**
+- Endpoint: `/api/product/:id`
+- Method: `PUT`
+- Description: Updates an existing product
+- Request parameters:
+  - `id` (required, path): product ObjectId
+- Request body example:
+```json
+{
+  "name": "Fanta Updated",
+  "quantity": 22,
+  "price_in": 42,
+  "price_out": 105,
+  "description": "Updated description",
+  "image": "https://example.com/fanta-updated.png"
+}
 ```
-
-Example response:
+- Success response:
 ```json
 {
   "success": true,
@@ -218,17 +211,24 @@ Example response:
   }
 }
 ```
+- Error responses:
+  - `400` Invalid product ID
+  - `404` Product not found
+  - `422` Validation failed
+  - `500` Internal server error
 
-### Delete Product
-
-`DELETE /api/product/:id`
-
-Example:
+**6) Delete Product**
+- Endpoint: `/api/product/:id`
+- Method: `DELETE`
+- Description: Deletes a product by ID
+- Request parameters:
+  - `id` (required, path): product ObjectId
+- Request body: None
+- Example request:
 ```bash
 curl -X DELETE "http://localhost:3000/api/product/65f0b7d9d5a89a0f7e5f9999"
 ```
-
-Example response:
+- Success response:
 ```json
 {
   "success": true,
@@ -236,10 +236,21 @@ Example response:
   "data": null
 }
 ```
+- Error responses:
+  - `400` Invalid product ID
+  - `404` Product not found
+  - `500` Internal server error
 
-## Important Development Notes
+**Running the Project**
+- Development mode:
+```bash
+npm start
+```
+- Production mode:
+```bash
+npm start
+```
+There is no separate dev script (e.g., `nodemon`) in `package.json`.
 
-- Seed data runs on every startup and can insert duplicate products if not cleared.
-- Route validation middleware is registered after the controller in `src/routes/api/product.js`, so request validation does not run as expected.
-- `ProductResource` maps `price_in` and `price_out` using `product.price` instead of `product.price_in` and `product.price_out`, which can produce incorrect values (often `null` or `NaN`) in responses.
-
+**Best Practices and Notes**
+- The validation middleware writes sanitized data to `req.validated`, but controllers currently read from `req.body`.

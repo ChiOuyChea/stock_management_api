@@ -117,7 +117,7 @@ exports.show = async (req, res) => {
  */
 exports.store = async (req, res) => {
     try {
-        const request = req.body;
+        const request = req.validated;
 
         const errors = validateProduct(request);
 
@@ -155,7 +155,7 @@ exports.store = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        const request = req.body;
+        const request = req.validated;
 
         if (!isValidObjectId(id)) {
             return response(res, 400, "Invalid product ID");

@@ -4,8 +4,8 @@ class ProductResource {
       id         : product._id,
       name       : product.name,
       quantity   : Number(product.quantity),
-      price_in   : Number(product.price),
-      price_out  : Number(product.price),
+      price_in   : Number(product.price_in),
+      price_out  : Number(product.price_out),
       description: product.description,
       image      : product.image
     };
