@@ -18,7 +18,7 @@ Node.js + Express API for managing product inventory with MongoDB. The service p
 **Installation**
 1. Clone the repository:
 ```bash
-git clone <repo-url>
+git clone git@bitbucket.org:linkplify-ui/stock_management_sytem_api.git
 cd stock_management_sytem_api
 ```
 2. Install dependencies:
